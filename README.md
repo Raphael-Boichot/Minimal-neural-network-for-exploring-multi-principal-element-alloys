@@ -2,6 +2,8 @@
 
 A very minimal implementation of neural network on Matlab to fit mechanical properties of a multi-principal element alloy. The example given fits the Vickers hardness in the Al-Co-Cr-Fe-Ni-Ti-Mo. Experimental data used are extracted from [this database](https://github.com/CitrineInformatics/MPEA_dataset). The code used is inspired from this [other repository](https://github.com/Raphael-Boichot/Accelerated-exploration-of-multinary-systems).
 
+This code was only made to be simple to understand and reuse in similar context.
+
 ## Minimal requirement
 - Matlab 23.2.0.2485118 (R2023b) Update 6
 - Parallel computing toolbox (optional)
