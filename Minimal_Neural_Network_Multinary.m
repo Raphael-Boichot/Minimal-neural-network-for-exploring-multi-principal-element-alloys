@@ -7,10 +7,10 @@ nb_elements=7;
 compo_variation=0.1; %for predicted data
 
 %% Options for training
-nbtraining = 50; %number of batches for training with k folding
+nbtraining = 10; %number of batches for training with k folding
 nbkfold = 16;    %number of k folding = number of processors used in parallel
-neurons_per_hidden_layer = 500;
-options.Epochs = 750;
+neurons_per_hidden_layer = 300; %the more the better but the higher the risk of overfitting, so the k-folding
+options.Epochs = 1000; %Epochs are enough when fitting does not depends on this variable anymore
 
 name_elements=["Al","Co","Cr","Fe","Ni","Ti","Mo"];
 name_elements_array = {'Al','Co','Cr','Fe','Ni','Ti','Mo'};
@@ -26,8 +26,8 @@ Training=data.HV;             %data to fit, this one is formatted differently in
 
 layers= [
     featureInputLayer(nb_elements); % number of descriptors
-    fullyConnectedLayer(neurons_per_hidden_layer)
-    reluLayer()
+    fullyConnectedLayer(neurons_per_hidden_layer) %can be different for each layers as well as the deepness
+    reluLayer() %looks like the best type of layer for this problem
     fullyConnectedLayer(neurons_per_hidden_layer)
     reluLayer()
     fullyConnectedLayer(neurons_per_hidden_layer)
@@ -42,18 +42,12 @@ options.Save_yytest = true;
 options.Seed = 123;
 rng(options.Seed);
 
-% options = trainingOptions('rmsprop', ...
-%     'MaxEpochs', options.Epochs, ...
-%     'Verbose', false,...
-%     'Plots', 'training-progress');
-
 options = trainingOptions('rmsprop', ...
     'MaxEpochs', options.Epochs, ...
-    'Verbose', false, 'ExecutionEnvironment','auto')
+    'Verbose', false, 'ExecutionEnvironment','auto');
 
 best_rmse = 1e9;
 best_adj = 0;
-best_net = [];
 history_RMSE=[];
 history_adjrsquare=[];
 best_net=[];
@@ -77,8 +71,8 @@ for i=1:1:nbtraining
         nets{fold} = current_net;% stores the networks in a cell
 
         %Testing the current network trained from k-folding with the data fullset
-        current_predictions = predict(current_net, Compo)
-        mdl = fitlm(current_predictions,Training);
+        current_predictions = predict(current_net, Compo) 
+        mdl = fitlm(current_predictions,Training); %it is possible to use a loss function too here
         sub_adjrsquare_kfold(fold,1)=mdl.Rsquared.Adjusted;
         sub_RMSE_kfold(fold,1)=rmse(current_predictions,Training);
     end
@@ -86,7 +80,8 @@ for i=1:1:nbtraining
     history_adjrsquare=[history_adjrsquare;sub_adjrsquare_kfold];
     figure(1)
     histogram(history_RMSE,20)
-    title('RMSE')
+    title('RMSE over batches')
+    fontsize(16,"points");
     drawnow
     for fold=1:1:nbkfold
         if sub_adjrsquare_kfold(fold) > best_adj
@@ -97,7 +92,7 @@ for i=1:1:nbtraining
             save('BestNN.mat','best_net','-mat');
         end
     end
-    disp(['Batch: ',num2str(i), ' minRMSE: ',num2str(min(history_RMSE)) ,' meanRMSE: ',num2str(mean(history_RMSE)) ,' stdRMSE: ',num2str(std(history_RMSE))])
+    disp(['Batch: ',num2str(i), '/',num2str(nbtraining), ' minRMSE: ',num2str(min(history_RMSE)) ,' meanRMSE: ',num2str(mean(history_RMSE)) ,' stdRMSE: ',num2str(std(history_RMSE))])
     %toc
 end
 
@@ -109,10 +104,12 @@ plot(Training,Predictions,'bd')
 title(['Adjusted R squared: ',num2str(mdl.Rsquared.Adjusted)])
 ylabel('Predicted')
 xlabel('Actual')
-subplot(2,2,2)
+fontsize(16,"points");
 
-histogram(Training-Predictions,20)
+subplot(2,2,2)
+qqplot(Training-Predictions)
 title('Residuals trained data')
+fontsize(16,"points");
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 x = gallery('uniformdata',[nb_elements 1],0);
 y = gallery('uniformdata',[nb_elements 1],1);
@@ -120,7 +117,6 @@ z = gallery('uniformdata',[nb_elements 1],2);
 DT = delaunayTriangulation(x,y,z);
 [T,Xb] = freeBoundary(DT);
 TR = triangulation(T,Xb);
-F = faceNormal(TR);
 coord_m=Compo*[x y z];
 color=hot;
 Output_scaled=(Training-min(Training))/(max(Training)-min(Training));
@@ -129,6 +125,7 @@ subplot(2,2,3)
 title('Experimental hardness')
 set(gca,'DefaultTextFontName','Helvetica','DefaultTextFontSize', 16)
 set(gca,'color','w')
+fontsize(16,"points");
 hold on
 tetramesh(DT,'FaceAlpha',0.05);
 text(TR.Points(:,1),TR.Points(:,2),TR.Points(:,3),name_elements)
@@ -158,8 +155,8 @@ for e1 =0:compo_variation:1
     end
 end
 disp('Calculating predicted data')
-predNN=predict(best_net, compo_predicted)
-
+predNN=predict(best_net, compo_predicted);
+predNN=max(0,predNN);% to remove if your predicted data are less than zero
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 x = gallery('uniformdata',[nb_elements 1],0);
@@ -177,6 +174,7 @@ subplot(2,2,4)
 title('Predicted hardness')
 set(gca,'DefaultTextFontName','Helvetica','DefaultTextFontSize', 16)
 set(gca,'color','w')
+fontsize(16,"points");
 hold on
 tetramesh(DT,'FaceAlpha',0.05);
 text(TR.Points(:,1),TR.Points(:,2),TR.Points(:,3),name_elements)
