@@ -156,7 +156,6 @@ for e1 =0:compo_variation:1
 end
 disp('Calculating predicted data')
 predNN=predict(best_net, compo_predicted);
-predNN=max(0,predNN);% to remove if your predicted data are less than zero
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 x = gallery('uniformdata',[nb_elements 1],0);
