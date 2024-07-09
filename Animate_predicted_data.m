@@ -1,16 +1,16 @@
 clc
 clear
 close all
+delete('Predicted_animated.gif')
 nb_elements=7;
 compo_variation=0.1; %for predicted data
-
 name_elements=["Al","Co","Cr","Fe","Ni","Ti","Mo"];
 disp('Loading best NN network from previous calculation')
 load('BestNN.mat')
 figure('Position',[100 100 900 900]);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-disp('Creating the composition table for prediction')
+disp('Creating the composition table for prediction, this may take a while...')
 num_compo=1;
 compo_predicted=[];
 for e1 =0:compo_variation:1
@@ -37,7 +37,6 @@ z = gallery('uniformdata',[nb_elements 1],2);
 DT = delaunayTriangulation(x,y,z);
 [T,Xb] = freeBoundary(DT);
 TR = triangulation(T,Xb);
-F = faceNormal(TR);
 coord_m=compo_predicted*[x y z];
 color=hot;
 Output_scaled=(predNN-min(predNN))/(max(predNN)-min(predNN));

@@ -1,6 +1,7 @@
 clc
 clear
 close all
+delete('Experimental_animated.gif')
 disp('Reading data from Excel file')
 data=readtable("CITRINE_hardness_dataset_sorted.xlsx");
 nb_elements=7;
