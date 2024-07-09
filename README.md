@@ -10,10 +10,11 @@ This code was only made to be simple to understand and reuse in similar context.
 - Statistics and Machine Learning Toolbox
 
 ## What does this code ?
-- It extract data from an Excel spreadsheet
+- It extracts data from an Excel spreadsheet
 - it creates a NN network with 4 hidden layers. Descriptor is the alloy composition in molar fraction and output is the Vickers hardness
 - it searches for the best network using k-folding and modified R-square to sort the best fits
 - it plots the best fit in n-th dimension using Delaunay triangulation
+- additionally you can create animated gifs with the experimental and predicted data
 
 ## Example of code output for hardness
 ![](/Figure.png)
