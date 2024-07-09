@@ -15,5 +15,15 @@ This code was only made to be simple to understand and reuse in similar context.
 - it searches for the best network using k-folding and modified R-square to sort the best fits
 - it plots the best fit in n-th dimension using Delaunay triangulation
 
-## Example of code output
+## Example of code output for hardness
 ![](/Figure.png)
+
+## Experimental hardness data in 7D plot
+![](/Experimental_animated.gif)
+
+## Predicted hardness data in 7D plot
+![](/Predicted_animated.gif)
+
+## Aknowledgements
+- Elise GAREL, Constellium, France
+- Adrien GUILLE and Marek BRAUN, Grenoble Institute of Technology, France
