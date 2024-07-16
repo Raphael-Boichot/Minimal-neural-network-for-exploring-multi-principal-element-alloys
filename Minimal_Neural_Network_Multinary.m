@@ -1,30 +1,21 @@
 clc
 clear
 close all
+
+%%%%%%%%%%%%%%%%%%%%%%%%% get the data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 disp('Reading data from Excel file')
 data=readtable("CITRINE_hardness_dataset_sorted.xlsx");
 nb_elements=7;
 compo_variation=0.1; %for predicted data
+%%%%%%%%%%%%%%%%%%%%%%%%% get the data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% Options for training
-nbtraining = 100; %number of batches for training with k folding
+%%%%%%%%%%%%%%%%%%%% Options for Neural network %%%%%%%%%%%%%%%%%%%%%
+nbtraining = 10; %number of batches for training with k folding
 nbkfold = 16;    %number of k folding = number of processors used in parallel
 neurons_per_hidden_layer = 300; %the more the better but the higher the risk of overfitting, so the k-folding
 options.Epochs = 1000; %Epochs are enough when fitting does not depends on this variable anymore
 
-name_elements=["Al","Co","Cr","Fe","Ni","Ti","Mo"];
-name_elements_array = {'Al','Co','Cr','Fe','Ni','Ti','Mo'};
-Al=str2double(data.Al);
-Co=str2double(data.Co);
-Cr=str2double(data.Cr);
-Fe=str2double(data.Fe);
-Ni=str2double(data.Ni);
-Ti=str2double(data.Ti);
-Mo=str2double(data.Mo);
-Compo=[Al Co Cr Fe Ni Ti Mo]; %descriptors
-Training=data.HV;             %data to fit, this one is formatted differently in the source file, because
-
-layers= [
+layers= [ %structure of the NN, inspired from https://www.sciencedirect.com/science/article/pii/S0264127523004707
     featureInputLayer(nb_elements); % number of descriptors
     fullyConnectedLayer(neurons_per_hidden_layer) %can be different for each layers as well as the deepness
     reluLayer() %looks like the best type of layer for this problem
@@ -37,27 +28,39 @@ layers= [
     fullyConnectedLayer(1) %number of outputs to fit
     regressionLayer()
     ];
-
-options.Save_yytest = true;
-options.Seed = 123;
+options.Seed = 666;
 rng(options.Seed);
-
 options = trainingOptions('rmsprop', ...
     'MaxEpochs', options.Epochs, ...
     'Verbose', false, 'ExecutionEnvironment','auto');
+%%%%%%%%%%%%%%%%%%%% Options for Neural network %%%%%%%%%%%%%%%%%%%%%
 
-best_rmse = 1e9;
+%%%%%%%%%%%%%%%%%%% Some variable pre-allocation %%%%%%%%%%%%%%%%%%%%
+best_RMSE = 1e9;
 best_adj = 0;
 history_RMSE=[];
 history_adjrsquare=[];
 best_net=[];
+nets = cell(1, nbkfold); % Defines the number of networks to save per batch and preallocate the structure
+%%%%%%%%%%%%%%%%%%% Some variable pre-allocation %%%%%%%%%%%%%%%%%%%%
 
-% Define the number of networks to save per batch and preallocate the structure
-nets = cell(1, nbkfold);
+%%%%%%%%%%%%%%%% Getting the data from csv file %%%%%%%%%%%%%%%%%%%%%
+name_elements=["Al","Co","Cr","Fe","Ni","Ti","Mo"];
+name_elements_array = {'Al','Co','Cr','Fe','Ni','Ti','Mo'};
+Al=str2double(data.Al);
+Co=str2double(data.Co);
+Cr=str2double(data.Cr);
+Fe=str2double(data.Fe);
+Ni=str2double(data.Ni);
+Ti=str2double(data.Ti);
+Mo=str2double(data.Mo);
+Compo=[Al Co Cr Fe Ni Ti Mo]; %descriptors
+Training=data.HV;             %data to fit, this one is formatted differently in the source file, because
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% This bloc is the training of the NN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 disp(['Training the neural network, kfold running on ',num2str(nbkfold),' processors in parallel'])
 for i=1:1:nbtraining
-    %tic
     cvp = cvpartition(length(Compo), 'KFold', nbkfold);
     sub_RMSE_kfold=1e9*ones(nbkfold,1);
     sub_adjrsquare_kfold=zeros(nbkfold,1);
@@ -71,7 +74,7 @@ for i=1:1:nbtraining
         nets{fold} = current_net;% stores the networks in a cell
 
         %Testing the current network trained from k-folding with the data fullset
-        current_predictions = predict(current_net, Compo) 
+        current_predictions = predict(current_net, Compo)
         mdl = fitlm(current_predictions,Training); %it is possible to use a loss function too here
         sub_adjrsquare_kfold(fold,1)=mdl.Rsquared.Adjusted;
         sub_RMSE_kfold(fold,1)=rmse(current_predictions,Training);
@@ -79,22 +82,40 @@ for i=1:1:nbtraining
     history_RMSE=[history_RMSE;sub_RMSE_kfold];
     history_adjrsquare=[history_adjrsquare;sub_adjrsquare_kfold];
     figure(1)
-    histogram(history_RMSE,20)
+    histogram(history_RMSE,32)
     title('RMSE over batches')
     fontsize(16,"points");
     drawnow
+
+    % uncomment this bloc if you want to use the RMSE as metric
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % for fold=1:1:nbkfold
+    %     if sub_adjrsquare_kfold(fold) > best_adj
+    %         best_rmse = sub_RMSE_kfold(fold);
+    %         best_adj = sub_adjrsquare_kfold(fold);
+    %         best_net=nets{fold};
+    %         disp(['Best adjRsquared found: ', num2str(best_adj),' local RMSE ',num2str(best_rmse) , ' saving to mat file...'])
+    %         save('BestNN.mat','best_net','-mat');
+    %     end
+    % end
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    % uncomment this bloc if you want to use the adjR² as metric
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     for fold=1:1:nbkfold
-        if sub_adjrsquare_kfold(fold) > best_adj
-            best_rmse = sub_RMSE_kfold(fold);
+        if sub_RMSE_kfold(fold) < best_RMSE
+            best_RMSE = sub_RMSE_kfold(fold);
             best_adj = sub_adjrsquare_kfold(fold);
             best_net=nets{fold};
-            disp(['Best adjRsquared found: ', num2str(best_adj),' local RMSE ',num2str(best_rmse) , ' saving to mat file...'])
+            disp(['Best RMSE found: ', num2str(best_RMSE),' local adjR² ',num2str(best_adj) , ' saving to mat file...'])
             save('BestNN.mat','best_net','-mat');
         end
     end
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     disp(['Batch: ',num2str(i), '/',num2str(nbtraining), ' minRMSE: ',num2str(min(history_RMSE)) ,' meanRMSE: ',num2str(mean(history_RMSE)) ,' stdRMSE: ',num2str(std(history_RMSE))])
     %toc
 end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% This bloc is the training of the NN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Predictions = predict(best_net, Compo);
 mdl = fitlm(Training,Predictions);
@@ -110,7 +131,8 @@ subplot(2,2,2)
 qqplot(Training-Predictions)
 title('Residuals trained data')
 fontsize(16,"points");
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%This bloc plots compositions by Delaunay triangulation%%%%%%%%%%%%%%%%%%%%%%%
 x = gallery('uniformdata',[nb_elements 1],0);
 y = gallery('uniformdata',[nb_elements 1],1);
 z = gallery('uniformdata',[nb_elements 1],2);
@@ -133,10 +155,10 @@ for i=1:size(Training,1)
     plot3(coord_m(i,1),coord_m(i,2),coord_m(i,3),'ok-','MarkerFaceColor',color(color_index_Output(i),:),'MarkerSize',Training(i)./100)
 end
 hold off
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%This bloc plots compositions by Delaunay triangulation%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%This bloc plots predicted data by Delaunay triangulation%%%%%%%%%%%%%%%%%%%%%
 disp('Creating the composition table for prediction')
 num_compo=1;
 compo_predicted=[];
@@ -154,10 +176,10 @@ for e1 =0:compo_variation:1
         end
     end
 end
+
 disp('Calculating predicted data')
 predNN=predict(best_net, compo_predicted);
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 x = gallery('uniformdata',[nb_elements 1],0);
 y = gallery('uniformdata',[nb_elements 1],1);
 z = gallery('uniformdata',[nb_elements 1],2);
@@ -182,7 +204,9 @@ for i=1:size(predNN,1)
 end
 hold off
 drawnow
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%This bloc plots predicted data by Delaunay triangulation%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%This bloc saves stuff %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 disp('Saving figure to png file')
 saveas(gcf,'Figure.png');
 disp('Saving figure to fig file')
@@ -191,3 +215,4 @@ disp('End of training, displaying the best compositions found by brute force:')
 Best_compositions=[compo_predicted,predNN];
 Best_compositions=sortrows(Best_compositions,nb_elements+1,"descend");
 Best_compositions(1:10,1:end-1)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%This bloc saves stuff %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
