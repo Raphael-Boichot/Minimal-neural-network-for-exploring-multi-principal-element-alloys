@@ -7,7 +7,7 @@ nb_elements=7;
 compo_variation=0.1; %for predicted data
 
 %% Options for training
-nbtraining = 10; %number of batches for training with k folding
+nbtraining = 100; %number of batches for training with k folding
 nbkfold = 16;    %number of k folding = number of processors used in parallel
 neurons_per_hidden_layer = 300; %the more the better but the higher the risk of overfitting, so the k-folding
 options.Epochs = 1000; %Epochs are enough when fitting does not depends on this variable anymore
