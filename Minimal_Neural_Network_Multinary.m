@@ -82,8 +82,15 @@ for i=1:1:nbtraining
     history_RMSE=[history_RMSE;sub_RMSE_kfold];
     history_adjrsquare=[history_adjrsquare;sub_adjrsquare_kfold];
     figure(1)
+    subplot(1,2,1)
     histogram(history_RMSE,32)
     title('RMSE over batches')
+    fontsize(16,"points");
+    subplot(1,2,2)
+    plot(history_RMSE,history_adjrsquare,'rd')
+    title('adjR² vs RMSE')
+    ylabel('adjR²')
+    xlabel('RMSE')
     fontsize(16,"points");
     drawnow
 
@@ -94,7 +101,7 @@ for i=1:1:nbtraining
     %         best_rmse = sub_RMSE_kfold(fold);
     %         best_adj = sub_adjrsquare_kfold(fold);
     %         best_net=nets{fold};
-    %         disp(['Best adjRsquared found: ', num2str(best_adj),' local RMSE ',num2str(best_rmse) , ' saving to mat file...'])
+    %         disp(['Best adjR² found: ', num2str(best_adj),' local RMSE ',num2str(best_rmse) , ' saving to mat file...'])
     %         save('BestNN.mat','best_net','-mat');
     %     end
     % end
