@@ -32,7 +32,7 @@ The minimal of RMSE does not always coincide with the best ajusted R², which is
 ## Predicted hardness data in 7D plot (Delaunay triangulation)
 ![](/Predicted_animated.gif)
 
-The advantage of Delaunay triangulation is that n dimensions mixtures are "as easy" to plot as 3D ones. Hypertetraedrons are just a bit trickier to grasp than tetraedrons for human brain.
+The advantage of Delaunay triangulation is that n dimensions mixtures are "as easy" to plot as 3D ones. Hypertetraedrons are just a bit trickier to grasp than tetraedrons for human brain. So the result is the following: in the Al-Co-Cr-Fe-Ni-Ti-Mo, the harder (Vickers hardness) alloys are close to the molybdenum vertex without any particular coktail effect...
 
 ## Warning
 These codes were made for fun and for training myself to study ANOVA resulting from NN fitting compared to DOE for example (NN _per se_ are not interesting me that much due to their primitive aspect). I decline any responsibility in the event of a nuclear power plant melt-down following the misuse of these codes.
