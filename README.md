@@ -19,6 +19,9 @@ This code was only made to be simple to understand and reuse in similar context.
 ## Example of code output for hardness
 ![](/Figure.png)
 
+## Main metrics during training over large batches
+![](/main/Metrics.png)
+
 ## Experimental hardness data in 7D plot
 ![](/Experimental_animated.gif)
 
