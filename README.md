@@ -22,11 +22,15 @@ This code was only made to be simple to understand and reuse in similar context.
 ## Main metrics during training over large batches
 ![](/Metrics.png)
 
-## Experimental hardness data in 7D plot
+The minimal of RMSE does not coincide with the best ajusted R², which is not trivial to explain as the fit is overall quite good. I suspect that a bunch of experimental data should be removed from the training data to improves the fit.
+
+## Experimental hardness data in 7D plot (Delaunay triangulation)
 ![](/Experimental_animated.gif)
 
-## Predicted hardness data in 7D plot
+## Predicted hardness data in 7D plot (Delaunay triangulation)
 ![](/Predicted_animated.gif)
+
+The advantage of Delaunay triangulation is that n dimensions mixtures are as easy to plot as 3D ones.
 
 ## Warning
 This codes were made for fun. I decline any responsibility in the event of a nuclear power plant melt-down following the misuse of these codes.
