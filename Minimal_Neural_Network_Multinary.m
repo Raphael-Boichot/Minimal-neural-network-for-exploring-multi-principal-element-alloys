@@ -13,7 +13,8 @@ compo_variation=0.1; %for predicted data
 nbtraining = 10; %number of batches for training with k folding
 nbkfold = 16;    %number of k folding = number of processors used in parallel
 neurons_per_hidden_layer = 300; %the more the better but the higher the risk of overfitting, so the k-folding
-options.Epochs = 1000; %Epochs are enough when fitting does not depends on this variable anymore
+options.Epochs = 1500; %Epochs are enough when fitting does not depends on this variable anymore
+%the more the neurons and layers, the higher this value must be
 
 layers= [ %structure of the NN, inspired from https://www.sciencedirect.com/science/article/pii/S0264127523004707
     featureInputLayer(nb_elements); % number of descriptors
@@ -81,43 +82,53 @@ for i=1:1:nbtraining
     end
     history_RMSE=[history_RMSE;sub_RMSE_kfold];
     history_adjrsquare=[history_adjrsquare;sub_adjrsquare_kfold];
-    figure(1)
-    subplot(1,2,1)
-    histogram(history_RMSE,32)
-    title('RMSE over batches')
-    fontsize(16,"points");
-    subplot(1,2,2)
-    plot(history_RMSE,history_adjrsquare,'rd')
-    title('adjR² vs RMSE')
-    ylabel('adjR²')
-    xlabel('RMSE')
-    fontsize(16,"points");
-    drawnow
+
+    % uncomment this bloc if you want to use the adjR² as metric
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    for fold=1:1:nbkfold
+        if sub_adjrsquare_kfold(fold) > best_adj
+            best_RMSE = sub_RMSE_kfold(fold);
+            best_adj = sub_adjrsquare_kfold(fold);
+            best_net=nets{fold};
+            disp(['Best adjR² found: ', num2str(best_adj),' local RMSE ',num2str(best_RMSE) , ' saving to mat file...'])
+            save('BestNN.mat','best_net','-mat');
+        end
+    end
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % uncomment this bloc if you want to use the RMSE as metric
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % for fold=1:1:nbkfold
-    %     if sub_adjrsquare_kfold(fold) > best_adj
-    %         best_rmse = sub_RMSE_kfold(fold);
+    %     if sub_RMSE_kfold(fold) < best_RMSE
+    %         best_RMSE = sub_RMSE_kfold(fold);
     %         best_adj = sub_adjrsquare_kfold(fold);
     %         best_net=nets{fold};
-    %         disp(['Best adjR² found: ', num2str(best_adj),' local RMSE ',num2str(best_rmse) , ' saving to mat file...'])
+    %         disp(['Best RMSE found: ', num2str(best_RMSE),' local adjR² ',num2str(best_adj) , ' saving to mat file...'])
     %         save('BestNN.mat','best_net','-mat');
     %     end
     % end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    % uncomment this bloc if you want to use the adjR² as metric
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    for fold=1:1:nbkfold
-        if sub_RMSE_kfold(fold) < best_RMSE
-            best_RMSE = sub_RMSE_kfold(fold);
-            best_adj = sub_adjrsquare_kfold(fold);
-            best_net=nets{fold};
-            disp(['Best RMSE found: ', num2str(best_RMSE),' local adjR² ',num2str(best_adj) , ' saving to mat file...'])
-            save('BestNN.mat','best_net','-mat');
-        end
-    end
+    close all
+    figure('Position',[100 100 1400 600]);
+    subplot(1,2,1)
+    histogram(history_RMSE,32)
+    title(['RMSE over ',num2str(i) ,' batches'])
+    ylabel('Occurences')
+    xlabel('RMSE')
+    fontsize(16,"points");
+    subplot(1,2,2)
+    hold on
+    loglog(history_RMSE,history_adjrsquare,'r.')
+    loglog(best_RMSE,best_adj,'bd')
+    hold off
+    title(['adjR² vs RMSE over ',num2str(i) ,' batches'])
+    ylabel('adjR²')
+    xlabel('RMSE')
+    fontsize(16,"points");
+    drawnow
+    saveas(gcf,'Metrics.png');
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     disp(['Batch: ',num2str(i), '/',num2str(nbtraining), ' minRMSE: ',num2str(min(history_RMSE)) ,' meanRMSE: ',num2str(mean(history_RMSE)) ,' stdRMSE: ',num2str(std(history_RMSE))])
     %toc
@@ -221,5 +232,6 @@ savefig('Figure.fig')
 disp('End of training, displaying the best compositions found by brute force:')
 Best_compositions=[compo_predicted,predNN];
 Best_compositions=sortrows(Best_compositions,nb_elements+1,"descend");
+name_elements_array
 Best_compositions(1:10,1:end-1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%This bloc saves stuff %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
