@@ -2,7 +2,7 @@
 
 A very minimal implementation of neural network on Matlab to fit mechanical properties of a multi-principal element alloy. The example given fits the Vickers hardness in the Al-Co-Cr-Fe-Ni-Ti-Mo. Experimental data used are extracted from [this database](https://github.com/CitrineInformatics/MPEA_dataset). The code used is inspired from this [other repository](https://github.com/Raphael-Boichot/Accelerated-exploration-of-multinary-systems).
 
-This code was only made to be simple to understand and reuse in similar context.
+This code was only made to be simple to understand and reuse in similar context. This is the very minimal code to use to fit data from a mixture design with more than 4 components.
 
 ## Minimal requirement
 - Matlab 23.2.0.2485118 (R2023b) Update 6
@@ -30,10 +30,10 @@ The minimal of RMSE does not coincide with the best ajusted R², which is not tr
 ## Predicted hardness data in 7D plot (Delaunay triangulation)
 ![](/Predicted_animated.gif)
 
-The advantage of Delaunay triangulation is that n dimensions mixtures are as easy to plot as 3D ones.
+The advantage of Delaunay triangulation is that n dimensions mixtures are as easy to plot as 3D ones. Hypertetraedrons are just a bit trickier to grasp than tetraedrons for human brain.
 
 ## Warning
-This codes were made for fun. I decline any responsibility in the event of a nuclear power plant melt-down following the misuse of these codes.
+These codes were made for fun and for training myself to study ANOVA resulting from NN fitting compared to DOE for example (NN _per se_ are not interesting me that much due to their primitive aspect). I decline any responsibility in the event of a nuclear power plant melt-down following the misuse of these codes.
 
 ## Aknowledgements
 - Elise GAREL, Constellium, France, for showing that the coktail effect in HEA is probably bullshit, which is once again confirmed here.
