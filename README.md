@@ -24,7 +24,7 @@ The code output is minimal: a linear plot of experimental (actual) and predicted
 ## Main metrics during training over large batches
 ![](/Metrics.png)
 
-The minimal of RMSE does not always coincide with the best ajusted R², which is not trivial to explain as the fit is overall quite good. I also suspect that a bunch of experimental data should be removed from the training data to improves the fit.
+The minimal of RMSE does not always coincide with the best ajusted R², which is not trivial to explain as the fit is overall quite good. I also suspect that a bunch of experimental data should be removed from the training data to improves the fit. The metrics calculated over large simulation batches shows the interest of running hundreds of NN training and keep the best network. Running just one training makes no sense regarding the dispersion of results.
 
 ## Experimental hardness data in 7D plot (Delaunay triangulation)
 ![](/Experimental_animated.gif)
