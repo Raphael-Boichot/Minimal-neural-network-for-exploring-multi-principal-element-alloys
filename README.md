@@ -28,6 +28,9 @@ This code was only made to be simple to understand and reuse in similar context.
 ## Predicted hardness data in 7D plot
 ![](/Predicted_animated.gif)
 
+## Warning
+This codes were made for fun. I decline any responsibility in the event of a nuclear power plant melt-down following the misuse of these codes.
+
 ## Aknowledgements
-- Elise GAREL, Constellium, France
-- Adrien GUILLE and Marek BRAUN, Grenoble Institute of Technology, France
+- Elise GAREL, Constellium, France, for showing that the coktail effect in HEA is probably bullshit, which is once again confirmed here.
+- Adrien GUILLE and Marek BRAUN, Grenoble Institute of Technology, France, for translating the Python code of Elise Garel to Matlab, which I used to start here.
