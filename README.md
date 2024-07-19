@@ -19,10 +19,12 @@ This code was only made to be simple to understand and reuse in similar context.
 ## Example of code output for hardness
 ![](/Figure.png)
 
+The code output is minimal: a linear plot of experimental (actual) and predicted hardness, the quantile-quantile plot of the residuals versus the theoretical quantile values from a normal distribution (If the distribution of residuals is normal, then the data plot appears linear), the experimental and the predicted datasets in 7D by Delaunay triangulation.
+
 ## Main metrics during training over large batches
 ![](/Metrics.png)
 
-The minimal of RMSE does not coincide with the best ajusted R², which is not trivial to explain as the fit is overall quite good. I suspect that a bunch of experimental data should be removed from the training data to improves the fit.
+The minimal of RMSE does not always coincide with the best ajusted R², which is not trivial to explain as the fit is overall quite good. I also suspect that a bunch of experimental data should be removed from the training data to improves the fit.
 
 ## Experimental hardness data in 7D plot (Delaunay triangulation)
 ![](/Experimental_animated.gif)
@@ -30,7 +32,7 @@ The minimal of RMSE does not coincide with the best ajusted R², which is not tr
 ## Predicted hardness data in 7D plot (Delaunay triangulation)
 ![](/Predicted_animated.gif)
 
-The advantage of Delaunay triangulation is that n dimensions mixtures are as easy to plot as 3D ones. Hypertetraedrons are just a bit trickier to grasp than tetraedrons for human brain.
+The advantage of Delaunay triangulation is that n dimensions mixtures are "as easy" to plot as 3D ones. Hypertetraedrons are just a bit trickier to grasp than tetraedrons for human brain.
 
 ## Warning
 These codes were made for fun and for training myself to study ANOVA resulting from NN fitting compared to DOE for example (NN _per se_ are not interesting me that much due to their primitive aspect). I decline any responsibility in the event of a nuclear power plant melt-down following the misuse of these codes.
