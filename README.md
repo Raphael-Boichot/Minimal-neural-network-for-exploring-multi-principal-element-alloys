@@ -21,10 +21,10 @@ This code was only made to be simple to understand and reuse in similar context.
 
 The code output is minimal: a linear plot of experimental (actual) and predicted hardness, the quantile-quantile plot of the residuals versus the theoretical quantile values from a normal distribution (If the distribution of residuals is normal, then the data plot appears linear), the experimental and the predicted datasets in 7D by Delaunay triangulation.
 
-## Main metrics during training over large batches (a batch = 16 training)
+## Main metrics during training over large batches (a batch = 16 trainings)
 ![](/Metrics.png)
 
-The minimal of RMSE does not always coincide with the best ajusted R², which is not trivial to explain as the fit is overall quite good. I also suspect that a bunch of experimental data should be removed from the training data to improves the fit. The metrics calculated over large simulation batches shows the interest of running hundreds of NN training and keep the best network. Running just one training makes no sense regarding the dispersion of results.
+The minimal of RMSE does not always coincide with the best ajusted R², which is not trivial to explain as the fit is overall quite good. I also suspect that a bunch of experimental data should be removed from the training data to improve the fit. The metrics calculated over large simulation batches shows the interest of running hundreds of NN trainings and keep the best network. Running just one NN training clearly makes no sense regarding the dispersion of results.
 
 ## Experimental hardness data in 7D plot (Delaunay triangulation)
 ![](/Experimental_animated.gif)
