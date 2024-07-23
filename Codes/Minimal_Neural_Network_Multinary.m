@@ -10,7 +10,7 @@ compo_variation=0.1; %for predicted data
 %%%%%%%%%%%%%%%%%%%%%%%%% get the data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%% Options for Neural network %%%%%%%%%%%%%%%%%%%%%
-nbtraining = 20; %number of batches for training with k folding
+nbtraining = 10; %number of batches for training with k folding
 nbkfold = 16;    %number of k folding = number of processors used in parallel
 neurons_per_hidden_layer = 300; %the more the better but the higher the risk of overfitting, so the k-folding
 options.Epochs = 1500; %Epochs are enough when fitting does not depends on this variable anymore
@@ -119,7 +119,7 @@ for i=1:1:nbtraining
     fontsize(16,"points");
     subplot(1,2,2)
     hold on
-    loglog(history_RMSE,history_adjrsquare,'r.')
+    loglog(history_RMSE,history_adjrsquare,'ro')
     loglog(best_RMSE,best_adj,'bd')
     hold off
     title(['adjR² vs RMSE over ',num2str(i*nbkfold) ,' trainings'])
