@@ -37,7 +37,7 @@ This graph exactly shows the issue with collecting experimental data from differ
 ## Predicted hardness rescaled between 1000 and 1600 HV
 ![](/Codes//Predicted_animated_rescaled.gif)
 
-Well, molybdenum rich alloys are hard and there is no obvious coktail effect... Not a very striking result.
+Well, molybdenum rich alloys are hard and there is no obvious coktail effect.
 
 ## Prediction error based variance/covariance matrix
 ![](/Codes//Error_animated.gif)
