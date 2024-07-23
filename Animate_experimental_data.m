@@ -29,7 +29,7 @@ coord_m=Compo*[x y z];
 color=hot;
 Output_scaled=(Training-min(Training))/(max(Training)-min(Training));
 color_index_Output=(round(Output_scaled.*255)+1);
-title('Experimental hardness')
+title('Experimental Vickers hardness')
 set(gca,'DefaultTextFontName','Helvetica','DefaultTextFontSize', 16)
 set(gca,'color','w')
 fontsize(16,"points");
@@ -37,7 +37,7 @@ hold on
 tetramesh(DT,'FaceAlpha',0.05);
 text(TR.Points(:,1),TR.Points(:,2),TR.Points(:,3),name_elements)
 for i=1:size(Training,1)
-    plot3(coord_m(i,1),coord_m(i,2),coord_m(i,3),'ok-','MarkerFaceColor',color(color_index_Output(i),:),'MarkerSize',Training(i)./100)
+    plot3(coord_m(i,1),coord_m(i,2),coord_m(i,3),'ok-','MarkerFaceColor',color(color_index_Output(i),:),'MarkerSize',Training(i)./50)
 end
 hold off
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

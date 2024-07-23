@@ -41,7 +41,7 @@ coord_m=compo_predicted*[x y z];
 color=hot;
 Output_scaled=(predNN-min(predNN))/(max(predNN)-min(predNN));
 color_index_Output=(round(Output_scaled.*255)+1);
-title('Predicted hardness')
+title('Predicted Vickers hardness')
 set(gca,'DefaultTextFontName','Helvetica','DefaultTextFontSize', 16)
 set(gca,'color','w')
 fontsize(16,"points");
@@ -49,7 +49,7 @@ hold on
 tetramesh(DT,'FaceAlpha',0.05);
 text(TR.Points(:,1),TR.Points(:,2),TR.Points(:,3),name_elements)
 for i=1:size(predNN,1)
-    plot3(coord_m(i,1),coord_m(i,2),coord_m(i,3),'ok-','MarkerFaceColor',color(color_index_Output(i),:),'MarkerSize',predNN(i)./200)
+    plot3(coord_m(i,1),coord_m(i,2),coord_m(i,3),'ok-','MarkerFaceColor',color(color_index_Output(i),:),'MarkerSize',predNN(i)./100)
 end
 hold off
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
