@@ -17,32 +17,35 @@ This code was only made to be simple to understand and reuse in similar context.
 - additionally you can create animated gifs with the experimental and predicted data
 
 ## Example of code output for hardness
-![](/Figure.png)
+![](/Codes/Figure.png)
 
 The code output is minimal: a linear plot of experimental (actual) and predicted hardness, the quantile-quantile plot of the residuals versus the theoretical quantile values from a normal distribution (If the distribution of residuals is normal, then the data plot appears linear), the experimental and the predicted datasets in 7D by Delaunay triangulation.
 
 ## Main metrics after a large number of independant trainings
-![](/Metrics.png)
+![](/Codes//Metrics.png)
 
 The minimal of RMSE does not always coincide with the best ajusted R², which is not trivial to explain as the fit is overall quite good. I also suspect that a bunch of experimental data should be removed from the training data to improve the fit. The metrics calculated over large simulation batches shows the interest of running hundreds of independant NN trainings and keep the best network (NN seeding is randomized and [k-folding](https://en.wikipedia.org/wiki/Cross-validation_(statistics)) with pool randomization is used here). You may be very lucky to find a good network with only one training !
 
 ## Experimental hardness data in 7D plot (Delaunay triangulation)
-![](/Experimental_animated.gif)
+![](/Codes//Experimental_animated.gif)
 
 This graph exactly shows the issue with collecting experimental data from different literature sources (may them be reliable): the experimental compositions do not follow any pattern and the experimental error is never indicated. This why with Elise Garel we chose a [completely different approach](https://www.sciencedirect.com/science/article/pii/S0264127523004707) to tackle multinary exploration, using mixture design (a kind of space filling design) to place the compositions in an optimal pattern.
 
 ## Predicted hardness data in 7D plot (Delaunay triangulation)
-![](/Predicted_animated.gif)
+![](/Codes//Predicted_animated.gif)
 
-Well, molybdenum rich alloys are hard and there is no coktail effect... Not a very striking result.
+## Predicted hardness rescaled between 1000 and 1600 HV
+![](/Codes//Predicted_animated.gif)
 
-## Prediction error based variance/covariance matrix in 7D plot (Delaunay triangulation)
-![](/Error_animated.gif)
+Well, molybdenum rich alloys are hard and there is no obvious coktail effect... Not a very striking result.
+
+## Prediction error based variance/covariance matrix
+![](/Codes//Error_animated.gif)
 
 This plot shows the predicted modeling error based on data distribution. It does only care on the distance between the predicted point and the whole experimental dataset. It is completely model-independant. The conclusion is obvious: the farther from the experimental points, the bigger the prediction error will be. The vertices having only few points, the error is maximal here.
 
-## Actual Neural Network residuals in 7D plot (Delaunay triangulation)
-![](/Residuals_animated.gif)
+## Actual Neural Network residuals
+![](/Codes//Residuals_animated.gif)
 
 This represents the real prediction error based on the difference between experimental points and their predicted values. It shows possible statistic outliers but also localized lack of fit. Without any further indication on experimental errors, hard to tell if any outliers must be removed.
 
