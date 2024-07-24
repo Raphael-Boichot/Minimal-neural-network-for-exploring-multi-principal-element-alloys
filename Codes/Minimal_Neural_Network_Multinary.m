@@ -192,12 +192,12 @@ hold off
 disp('Creating the composition table for prediction')
 num_compo=1;
 compo_predicted=[];
-for e1 =0:compo_variation:1
-    for e2=0:compo_variation:1-e1
-        for e3=0:compo_variation:1-e1-e2
-            for e4=0:compo_variation:1-e1-e2-e3
-                for e5=0:compo_variation:1-e1-e2-e3-e4
-                    for e6=0:compo_variation:1-e1-e2-e3-e4-e5
+for e1=0:compo_variation:1+eps%eps is to avoid skipping points due to rounding errors
+    for e2=0:compo_variation:1-e1+eps
+        for e3=0:compo_variation:1-e1-e2+eps
+            for e4=0:compo_variation:1-e1-e2-e3+eps
+                for e5=0:compo_variation:1-e1-e2-e3-e4+eps
+                    for e6=0:compo_variation:1-e1-e2-e3-e4-e5+eps
                         compo_predicted=[compo_predicted;[e1,e2,e3,e4,e5,e6,1-e1-e2-e3-e4-e5-e6]];
                         num_compo=num_compo+1;
                     end
@@ -206,6 +206,7 @@ for e1 =0:compo_variation:1
         end
     end
 end
+compo_predicted=round(compo_predicted,6);%to deal with rounding approximations, again
 
 disp('Calculating predicted data')
 predNN=predict(best_net, compo_predicted);
@@ -241,9 +242,9 @@ disp('Saving figure to png file')
 saveas(gcf,'Figure.png');
 % disp('Saving figure to fig file')
 % savefig('Figure.fig')
-disp('End of training, displaying the best compositions found by brute force:')
-Best_compositions=[compo_predicted,predNN];
-Best_compositions=sortrows(Best_compositions,nb_elements+1,"descend");
-name_elements_array
-Best_compositions(1:10,1:end-1)
+% disp('End of training, displaying the best compositions found by brute force:')
+% Best_compositions=[compo_predicted,predNN];
+% Best_compositions=sortrows(Best_compositions,nb_elements+1,"descend");
+% name_elements_array
+% Best_compositions(1:10,1:end-1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%This bloc saves stuff %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
