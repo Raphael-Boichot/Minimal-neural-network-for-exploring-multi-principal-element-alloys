@@ -4,7 +4,7 @@ close all
 delete('Predicted_animated_rescaled.gif')
 nb_elements=7;
 compo_variation=0.1; %for predicted data
-threshold_hardness=1000 % does not plot values below this threshold
+threshold_hardness=1000; % does not plot values below this threshold
 name_elements=["Al","Co","Cr","Fe","Ni","Ti","Mo"];
 disp('Loading best NN network from previous calculation')
 load('BestNN.mat')

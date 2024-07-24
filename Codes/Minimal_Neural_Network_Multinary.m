@@ -10,9 +10,9 @@ compo_variation=0.1; %for predicted data
 %%%%%%%%%%%%%%%%%%%%%%%%% get the data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%% Options for Neural network %%%%%%%%%%%%%%%%%%%%%
-nbtraining = 25; %number of batches for training with k folding
+nbtraining = 10; %number of batches for training with k folding
 nbkfold = 16;    %number of k folding = number of processors used in parallel
-neurons_per_hidden_layer = 300; %the more the better but the higher the risk of overfitting, so the k-folding
+neurons_per_hidden_layer = 250; %the more the better but the higher the risk of overfitting, so the k-folding
 options.Epochs = 1500; %Epochs are enough when fitting does not depends on this variable anymore
 %the more the neurons and layers, the higher this value must be
 
@@ -31,7 +31,7 @@ layers= [ %structure of the NN, inspired from https://www.sciencedirect.com/scie
     ];
 options.Seed = 666;
 rng(options.Seed);
-options = trainingOptions('rmsprop', ...
+options = trainingOptions('adam', ...
     'MaxEpochs', options.Epochs, ...
     'Verbose', false, 'ExecutionEnvironment','auto');
 %%%%%%%%%%%%%%%%%%%% Options for Neural network %%%%%%%%%%%%%%%%%%%%%
