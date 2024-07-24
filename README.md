@@ -47,7 +47,7 @@ This plot shows the predicted modeling error based on data distribution. It does
 ## Actual Neural Network residuals
 ![](/Codes//Residuals_animated.gif)
 
-This represents the real prediction error based on the difference between experimental points and their predicted values. It shows possible statistic outliers but also localized lack of fit. Without any further indication on experimental errors, hard to tell if any outliers must be removed.
+This represents the real prediction error based on the difference between experimental points and their predicted values. It shows possible statistic outliers but also localized lack of fit. Without any further indication on experimental errors, hard to tell if outliers must be removed or if there is an interest to complexify the network (with the risk of overfitting data).
 
 ## Kind warning
 These codes were essentially made for fun and for training myself to study ANOVA resulting from NN fitting compared to other fitting methods like RSM for example (NN _per se_ are not interesting me that much due to their "black box" aspect). I decline any responsibility in the event of a nuclear power plant melt-down following the misuse of these codes.
