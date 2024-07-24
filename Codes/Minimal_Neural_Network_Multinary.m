@@ -10,7 +10,7 @@ compo_variation=0.1; %for predicted data
 %%%%%%%%%%%%%%%%%%%%%%%%% get the data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%% Options for Neural network %%%%%%%%%%%%%%%%%%%%%
-nbtraining = 10; %number of batches for training with k folding
+nbtraining = 25; %number of batches for training with k folding
 nbkfold = 16;    %number of k folding = number of processors used in parallel
 neurons_per_hidden_layer = 300; %the more the better but the higher the risk of overfitting, so the k-folding
 options.Epochs = 1500; %Epochs are enough when fitting does not depends on this variable anymore
@@ -78,7 +78,8 @@ for i=1:1:nbtraining
         current_predictions = predict(current_net, Compo)
         mdl = fitlm(current_predictions,Training); %it is possible to use a loss function too here
         sub_adjrsquare_kfold(fold,1)=mdl.Rsquared.Adjusted;
-        sub_RMSE_kfold(fold,1)=rmse(current_predictions,Training);
+        sub_RMSE_kfold(fold,1)=rmse(current_predictions,Training); %here you can use a bunch of other loss functions from Matlab ML library
+	%see for example https://fr.mathworks.com/help/deeplearning/ug/define-custom-training-loops-loss-functions-and-networks.html
     end
     history_RMSE=[history_RMSE;sub_RMSE_kfold];
     history_adjrsquare=[history_adjrsquare;sub_adjrsquare_kfold];
@@ -110,14 +111,14 @@ for i=1:1:nbtraining
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     close all
-    figure('Position',[100 400 1400 600]);
-    subplot(1,2,1)
+    figure('Position',[100 100 1200 1000]);
+    subplot(2,2,1)
     histogram(history_RMSE,32)
     title(['RMSE over ',num2str(i*nbkfold) ,' trainings'])
     ylabel('Occurences')
     xlabel('RMSE')
     fontsize(16,"points");
-    subplot(1,2,2)
+    subplot(2,2,2)
     hold on
     loglog(history_RMSE,history_adjrsquare,'ro')
     loglog(best_RMSE,best_adj,'bd')
@@ -125,6 +126,17 @@ for i=1:1:nbtraining
     title(['adjR² vs RMSE over ',num2str(i*nbkfold) ,' trainings'])
     ylabel('adjR²')
     xlabel('RMSE')
+    fontsize(16,"points");
+    subplot(2,2,3)
+    residuals=Training-predict(best_net, Compo);
+    histfit(residuals,20);
+    pd = fitdist(residuals,'Normal');
+    title(['Residuals: mu=',num2str(pd.mu),' sigma=', num2str(pd.sigma)])
+    fontsize(16,"points");
+    ylabel('Occurences')
+    xlabel('Deviation')
+    subplot(2,2,4)
+    qqplot(residuals)
     fontsize(16,"points");
     drawnow
     saveas(gcf,'Metrics.png');
