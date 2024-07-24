@@ -1,6 +1,6 @@
 # A minimal Neural Network for exploring multi-principal element alloys
 
-A very minimal implementation of neural network on Matlab to fit mechanical properties of a multi-principal element alloy. The example given fits the Vickers hardness in the Al-Co-Cr-Fe-Ni-Ti-Mo. Experimental alloy data used are extracted from [this database](https://github.com/CitrineInformatics/MPEA_dataset) and the Vickers hardnesses for pure elements from [webelements](https://www.webelements.com/titanium/physics.html). The code used is inspired from this [other repository](https://github.com/Raphael-Boichot/Accelerated-exploration-of-multinary-systems).
+A very minimal implementation of neural network on Matlab to fit mechanical properties of a multi-principal element alloy (or HEA for high entropy alloys). The example given fits the Vickers hardness in the Al-Co-Cr-Fe-Ni-Ti-Mo. Experimental alloy data used are extracted from [this database](https://github.com/CitrineInformatics/MPEA_dataset) and the Vickers hardnesses for pure elements from [webelements](https://www.webelements.com/titanium/physics.html). The code used is inspired from this [other repository](https://github.com/Raphael-Boichot/Accelerated-exploration-of-multinary-systems).
 
 This code was only made to be simple to understand and reuse in similar context. This is the very minimal code to use to fit data from a mixture design with more than 4 components.
 
@@ -24,7 +24,7 @@ The code output is minimal: a linear plot of experimental (actual) and predicted
 ## Main metrics after a large number of independant trainings
 ![](/Codes//Metrics.png)
 
-The minimal of RMSE does not always coincide with the best ajusted R², which is not trivial to explain as the fit is overall quite good. I also suspect that a bunch of experimental data should be removed from the training data to improve the fit. The metrics calculated over large simulation batches shows the interest of running hundreds of independant NN trainings and keep the best network (NN seeding is randomized and [k-folding](https://en.wikipedia.org/wiki/Cross-validation_(statistics)) with pool randomization is used here). You may be very lucky to find a good network with only one training !
+The minimal of RMSE does not always coincide with the best ajusted R², which is not trivial to explain as the fit is overall quite good. I also suspect that a bunch of experimental data should be removed from the training data to improve the fit. The metrics calculated over large simulation batches shows the interest of running dozens of independant NN trainings and keep the best network (NN seeding is randomized and [k-folding](https://en.wikipedia.org/wiki/Cross-validation_(statistics)) with pool randomization is used here). You may be very lucky to find a good network with only one training !
 
 ## Experimental hardness data in 7D plot (Delaunay triangulation)
 ![](/Codes//Experimental_animated.gif)
@@ -37,7 +37,7 @@ This graph exactly shows the issue with collecting experimental data from differ
 ## Predicted hardness rescaled between 1000 and 1600 HV
 ![](/Codes//Predicted_animated_rescaled.gif)
 
-Well, molybdenum rich alloys are hard and there is no obvious coktail effect.
+Well, molybdenum rich alloys are hard as expected (but the Mo-Cr-Co ternary is surprisingly not the hardest) and there is probably something to dig in the Ti-Cr-Co ternary. As the prediction error is maximal near the vertices, a good strategy would be to complete these data with Vickers hardness measured along the Mo-X and Co-X binaries for example, then retry a training, then refine the area of interest, make new measurements and so on until convergence to an optimized alloy. This should be the basis of experimental HEA exploration, sadly not that often applied in 2024.
 
 ## Prediction error based variance/covariance matrix
 ![](/Codes//Error_animated.gif)
