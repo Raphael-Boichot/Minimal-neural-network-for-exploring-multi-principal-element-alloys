@@ -38,7 +38,7 @@ DT = delaunayTriangulation(x,y,z);
 [T,Xb] = freeBoundary(DT);
 TR = triangulation(T,Xb);
 coord_m=compo_predicted*[x y z];
-color=hot;
+color=jet;
 Output_scaled=(predNN-min(predNN))/(max(predNN)-min(predNN));
 color_index_Output=(round(Output_scaled.*255)+1);
 title('Predicted Vickers hardness')

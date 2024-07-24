@@ -49,7 +49,7 @@ DT = delaunayTriangulation(x,y,z);
 [T,Xb] = freeBoundary(DT);
 TR = triangulation(T,Xb);
 coord_m=compo_predicted*[x y z];
-color=hot;
+color=jet;
 Output_scaled=(predError-min(predError))/(max(predError)-min(predError));
 color_index_Output=(round(Output_scaled.*255)+1);
 title('Predicted error based on point distribution')

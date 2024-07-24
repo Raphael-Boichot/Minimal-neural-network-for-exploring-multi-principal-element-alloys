@@ -32,7 +32,7 @@ DT = delaunayTriangulation(x,y,z);
 [T,Xb] = freeBoundary(DT);
 TR = triangulation(T,Xb);
 coord_m=Compo*[x y z];
-color=hot;
+color=jet;
 Output_scaled=(residuals-min(residuals))/(max(residuals)-min(residuals));
 color_index_Output=(round(Output_scaled.*255)+1);
 title('Neural Network residuals')

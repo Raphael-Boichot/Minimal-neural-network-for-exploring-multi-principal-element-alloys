@@ -170,7 +170,7 @@ DT = delaunayTriangulation(x,y,z);
 [T,Xb] = freeBoundary(DT);
 TR = triangulation(T,Xb);
 coord_m=Compo*[x y z];
-color=hot;
+color=jet;
 Output_scaled=(Training-min(Training))/(max(Training)-min(Training));
 color_index_Output=(round(Output_scaled.*255)+1);
 subplot(2,2,3)
@@ -218,7 +218,7 @@ DT = delaunayTriangulation(x,y,z);
 TR = triangulation(T,Xb);
 F = faceNormal(TR);
 coord_m=compo_predicted*[x y z];
-color=hot;
+color=jet;
 Output_scaled=(predNN-min(predNN))/(max(predNN)-min(predNN));
 color_index_Output=(round(Output_scaled.*255)+1);
 subplot(2,2,4)

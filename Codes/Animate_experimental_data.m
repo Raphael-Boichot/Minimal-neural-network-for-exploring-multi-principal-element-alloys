@@ -26,7 +26,7 @@ DT = delaunayTriangulation(x,y,z);
 [T,Xb] = freeBoundary(DT);
 TR = triangulation(T,Xb);
 coord_m=Compo*[x y z];
-color=hot;
+color=jet;
 Output_scaled=(Training-min(Training))/(max(Training)-min(Training));
 color_index_Output=(round(Output_scaled.*255)+1);
 title('Experimental Vickers hardness')
