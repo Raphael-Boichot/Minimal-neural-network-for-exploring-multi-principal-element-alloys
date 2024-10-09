@@ -31,6 +31,7 @@ end
 compo_predicted=round(compo_predicted,6);%to deal with rounding approximations, again
 disp('Calculating predicted data')
 predNN=predict(best_net, compo_predicted);
+predNN=max(predNN,0);%ensures no value less than zero for plotting
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 x = gallery('uniformdata',[nb_elements 1],0);

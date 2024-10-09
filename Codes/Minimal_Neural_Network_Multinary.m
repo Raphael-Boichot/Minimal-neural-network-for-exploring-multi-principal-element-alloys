@@ -10,7 +10,7 @@ compo_variation=0.1; %for predicted data
 %%%%%%%%%%%%%%%%%%%%%%%%% get the data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%% Options for Neural network %%%%%%%%%%%%%%%%%%%%%
-nbtraining = 10; %number of batches for training with k folding
+nbtraining = 25; %number of batches for training with k folding
 nbkfold = 16;    %number of k folding = number of processors used in parallel
 neurons_per_hidden_layer = 250; %the more the better but the higher the risk of overfitting, so the k-folding
 options.Epochs = 1500; %Epochs are enough when fitting does not depends on this variable anymore
@@ -79,7 +79,7 @@ for i=1:1:nbtraining
         mdl = fitlm(current_predictions,Training); %it is possible to use a loss function too here
         sub_adjrsquare_kfold(fold,1)=mdl.Rsquared.Adjusted;
         sub_RMSE_kfold(fold,1)=rmse(current_predictions,Training); %here you can use a bunch of other loss functions from Matlab ML library
-	%see for example https://fr.mathworks.com/help/deeplearning/ug/define-custom-training-loops-loss-functions-and-networks.html
+    	%see for example https://fr.mathworks.com/help/deeplearning/ug/define-custom-training-loops-loss-functions-and-networks.html
     end
     history_RMSE=[history_RMSE;sub_RMSE_kfold];
     history_adjrsquare=[history_adjrsquare;sub_adjrsquare_kfold];
@@ -156,7 +156,6 @@ title(['Adjusted R squared: ',num2str(mdl.Rsquared.Adjusted)])
 ylabel('Predicted')
 xlabel('Actual')
 fontsize(16,"points");
-
 subplot(2,2,2)
 qqplot(Training-Predictions)
 title('Residuals trained data')
@@ -210,7 +209,13 @@ compo_predicted=round(compo_predicted,6);%to deal with rounding approximations, 
 
 disp('Calculating predicted data')
 predNN=predict(best_net, compo_predicted);
+if min(predNN)<0
+    disp('Warning, predicted data below zero automatically removed !')
+end
+disp('Thresholding predicted data')
+predNN=max(predNN,0);%ensures no value less than zero for plotting
 
+disp('Plotting predicted data')
 x = gallery('uniformdata',[nb_elements 1],0);
 y = gallery('uniformdata',[nb_elements 1],1);
 z = gallery('uniformdata',[nb_elements 1],2);
